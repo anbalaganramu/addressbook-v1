@@ -3,30 +3,27 @@ pipeline {
     agent any
 
 
-    parameters {
-
-        string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Environment to deploy to')
-
-        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run tests?')
-
-        choice(name: 'DEPLOY_SERVER', choices: ['dev', 'test', 'prod'], description: 'Choose deployment server')
-
-    }
-
-
     stages {
 
-        stage('Dev Stage') {
+        stage('Input Environment') {
 
             steps {
 
                 script {
 
-                    if (params.ENVIRONMENT == 'dev') {
+                    env.SELECTED_ENV = input(
 
-                        echo "Building for development environment"
+                        id: 'EnvironmentInput', 
 
-                    }
+                        message: 'Select the environment to proceed', 
+
+                        parameters: [
+
+                            choice(name: 'ENVIRONMENT', choices: ['Production', 'Development', 'Test'], description: 'Choose the environment')
+
+                        ]
+
+                    )
 
                 }
 
@@ -34,45 +31,52 @@ pipeline {
 
         }
 
-        stage('Test Stage') {
+
+        stage('Production Environment') {
+
+            when {
+
+                expression { env.SELECTED_ENV == 'Production' }
+
+            }
 
             steps {
 
-                script {
-
-                    if (params.RUN_TESTS) {
-
-                        echo "Running tests in the ${params.ENVIRONMENT} environment"
-
-                    } else {
-
-                        echo "Skipping tests"
-
-                    }
-
-                }
+                echo 'You have selected the Production environment!'
 
             }
 
         }
 
-        stage('Prod Stage') {
+
+        stage('Development Environment') {
+
+            when {
+
+                expression { env.SELECTED_ENV == 'Development' }
+
+            }
 
             steps {
 
-                script {
+                echo 'You have selected the Development environment!'
 
-                    if (params.DEPLOY_SERVER == 'prod') {
+            }
 
-                        echo "Deploying to production server"
+        }
 
-                    } else {
 
-                        echo "Deploying to ${params.DEPLOY_SERVER} server"
+        stage('Test Environment') {
 
-                    }
+            when {
 
-                }
+                expression { env.SELECTED_ENV == 'Test' }
+
+            }
+
+            steps {
+
+                echo 'You have selected the Test environment!'
 
             }
 
