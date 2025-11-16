@@ -11,9 +11,9 @@ pipeline {
                 
             }
         }
-        environment{
-            BUILD_SERVER='ec2-user@172.31.11.111'
-        }
+       # environment{
+        #    BUILD_SERVER='ec2-user@172.31.11.111'
+        #}
         
         stage('Test') {
             agent any
@@ -23,8 +23,8 @@ pipeline {
                     echo 'Compile the code'
                     // echo "Compiling for ${params.Env} environment"
                     // sh "mvn compile"
-                    sh "scp -o StrictHostKeyChecking=no server-script.sh ${BUILD_SERVER}:/home/ec2-user"
-                    sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVER} 'bash /home/ec2-user/server-script.sh'"
+                    sh "scp -o StrictHostKeyChecking=no server-script.sh ec2-user@172.31.11.111:/home/ec2-user"
+                    sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.11.111 'bash /home/ec2-user/server-script.sh'"
                 }
                 echo 'Test Job'
             }
