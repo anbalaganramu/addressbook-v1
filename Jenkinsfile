@@ -1,10 +1,14 @@
 pipeline {
     agent any
-
     stages {
         stage('Compile') {
+            agent {label 'newslave'}
             steps {
-                echo 'Compile Job'
+                script{
+                    echo 'Compile Job'
+                    sh "mkdir devOps"
+                }
+                
             }
         }
         stage('Test') {
