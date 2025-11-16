@@ -11,10 +11,7 @@ pipeline {
                 
             }
         }
-       # environment{
-        #    BUILD_SERVER='ec2-user@172.31.11.111'
-        #}
-        
+             
         stage('Test') {
             agent any
             steps {
